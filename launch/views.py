@@ -1,11 +1,15 @@
 from django.http import HttpResponseRedirect
 from django.template.context import RequestContext
 from django.shortcuts import render_to_response
+from django.template.loader import render_to_string
 from django.core.urlresolvers import reverse
+from django.conf import settings
+
 from launch.models import SignupRequest
 
 from launch.forms import SignupForm
 
+from django.core.mail import EmailMultiAlternatives
 
 def signup(request, template='launch/signup_page.html'):
 	if "POST" == request.method:
@@ -17,6 +21,11 @@ def signup(request, template='launch/signup_page.html'):
 			except:
 				signuprequest = signup_form.save(commit=False)
 				signuprequest.save()
+				subject = render_to_string('launch/email_subject.txt')
+				text_body = render_to_string('launch/email_text.txt')
+				email = EmailMultiAlternatives(subject, text_body, settings.DEFAULT_FROM_EMAIL, [signuprequest.email])
+				email.attach_alternative(render_to_string('launch/email_html.html'), "text/html")
+				email.send()
 				
 			request.session['signup_id'] = signuprequest.id
 			return HttpResponseRedirect(reverse('launch_page_success_with_id', args=[signuprequest.id]))

@@ -17,7 +17,7 @@ class SignupForm(forms.ModelForm):
 	def validate_unique(self):
 		pass
 
-	def save(self):
+	def save(self, commit=True):
 		referred_by = self.cleaned_data['referred_by_id']
 		try:
 			referred_by = SignupRequest.objects.get(pk=referred_by)
@@ -25,4 +25,4 @@ class SignupForm(forms.ModelForm):
 		except:
 			pass
 
-		super(SignupForm, self).save()
+		return super(SignupForm, self).save(commit=commit)
