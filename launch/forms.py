@@ -10,7 +10,9 @@ class SignupForm(forms.ModelForm):
 			'active', 
 			'invitation_sent', 
 			'signed_up',
-			'referred_by'
+			'referred_by',
+			'ip_address',
+			'hash_value'
 		)
 
 	#We want to silently fail on emails that have already been entered
