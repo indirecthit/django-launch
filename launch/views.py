@@ -34,6 +34,17 @@ def signup(request, template='launch/signup_page.html'):
 				email.attach_alternative(render_to_string('launch/email_html.html', email_context), "text/html")
 				email.send()
 				
+				launch_email = getattr(settings, 'LAUNCH_EMAIL_COPY', None)
+				if launch_email is not None:
+					email_context = {
+						'site' : Site.objects.get_current(),
+						'signuprequest' : signuprequest
+					}					
+					subject = render_to_string('launch/copy_email_subject.txt', email_context)
+					text_body = render_to_string('launch/copy_email_text.txt', email_context)
+					email = EmailMessage(subject, text_body, settings.DEFAULT_FROM_EMAIL, [launch_email])
+					email.send()
+				
 			request.session['signup_hash'] = signuprequest.hash_value
 			return HttpResponseRedirect(reverse('launch_page_success_with_id', args=[signuprequest.hash_value]))
 	else:
