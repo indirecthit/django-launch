@@ -22,7 +22,7 @@ class SignupForm(forms.ModelForm):
 	def save(self, commit=True):
 		referred_by = self.cleaned_data['referred_by_id']
 		try:
-			referred_by = SignupRequest.objects.get(pk=referred_by)
+			referred_by = SignupRequest.objects.get(hash_value=referred_by)
 			self.instance.referred_by = referred_by
 		except:
 			pass

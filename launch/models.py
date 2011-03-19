@@ -1,5 +1,5 @@
 from django.db import models
-from hashlib import md5
+from launch.encoder import UrlEncoder
 
 class SignupRequest(models.Model):
 	active = models.BooleanField(default=True, help_text='Deactivate requests that should be ignored.')
@@ -16,10 +16,10 @@ class SignupRequest(models.Model):
 		return "SignupRequest for %s" % self.email
 		
 	def save(self):
-		#hash_value = md5('%s_%s' % (self.id, self.email)).hexdigest()
 		if self.id is None:
 			super(SignupRequest, self).save()
-		hash_value = base36encode(int(self.id))
+		encoder = UrlEncoder()
+		hash_value = encoder.encode_url(int(self.id))
 		if self.hash_value != hash_value:
 			self.hash_value = hash_value
 		super(SignupRequest, self).save()

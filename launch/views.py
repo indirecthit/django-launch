@@ -10,7 +10,7 @@ from launch.models import SignupRequest
 
 from launch.forms import SignupForm
 
-from django.core.mail import EmailMultiAlternatives
+from django.core.mail import EmailMultiAlternatives, EmailMessage
 
 def signup(request, template='launch/signup_page.html'):		
 	if "POST" == request.method:
